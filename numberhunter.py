@@ -51,7 +51,7 @@ while replay == True:
                 shuffler = random.randint(direction // 2, 0)
                 if shuffler < 0:
                     target += shuffler
-                    print(f'I am subtracting {-shuffler} to the target number.')
+                    print(f'I am subtracting {-shuffler} from the target number.')
 
     if winner == False:
         print('\nSorry, you lose!')
