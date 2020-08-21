@@ -1,10 +1,15 @@
 import random
 
+# Range and rounds are included here to tweak difficulty more easily
+max_rng = 1000
+max_rounds = 10
+
+# Intro text
 print('\nWelcome to Number Hunter!')
-print('\nI will pick a number between 1 and 1000. You have ten guesses to guess it.')
+print(f'\nI will pick a number between 1 and {max_rng}. You have ten guesses to guess it.')
 print('Sounds easy, right? But there\'s a catch...')
 print('\nEach time you miss, I\'m going to move the number away from your guess.')
-print('The target number may shift by up to half the difference (rounded down).')
+print('The target number may shift by up to twice the difference.')
 print('(And yes, it can end up as a negative number.)')
 print('\nThat\'s it for the rules, so let\'s begin!')
 
@@ -14,13 +19,18 @@ replay = True
 
 while replay == True:
 
+    # You lose unless proven otherwise
     winner = False
     # Choose a number to guess
-    target = random.randint(1,1000)
+    target = random.randint(1,max_rng)
 
-    for round_num in range(10):
+    # Loop for specified number of rounds
+    for round_num in range(max_rounds):
 
+        # Setting guess = False doesn't allow you to guess 0
         guess = 'loop'
+
+        # The guess must be an integer
         while guess == 'loop':
             print('\nTake your best guess!')
             guess = input('> ')
@@ -30,33 +40,39 @@ while replay == True:
                 print('\nA guess needs to be an integer, my friend.')
                 guess = 'loop'
 
+        # Did you win? If so, set winner = True and break out of the for loop
         if guess == target:
             print('\nYou guessed it! You win!')
             print(f'You took {round_num + 1} guesses to find the number.')
             winner = True
             break
 
+        # Otherwise, determine if you need to go higher or lower, and make the adjustment
         else:
             direction = target - guess
 
-            if direction > 0 and round_num < 9:
+            # No need to do this part if on the last guess (index = max_rounds - 1)
+            if direction > 0 and round_num < max_rounds - 1:
                 print('\nYou need to guess a higher number.')
-                shuffler = random.randint(0, direction // 2)
+                shuffler = random.randint(0, direction * 2)
                 if shuffler > 0:
                     target += shuffler
                     print(f'I am adding {shuffler} to the target number.')
 
-            elif round_num < 9:
+            # This is already an else condition if the guess was off so the guess must be too high
+            elif round_num < max_rounds - 1:
                 print('\nYou need to guess a lower number.')
-                shuffler = random.randint(direction // 2, 0)
+                shuffler = random.randint(direction * 2, 0)
                 if shuffler < 0:
                     target += shuffler
                     print(f'I am subtracting {-shuffler} from the target number.')
 
+    # Once the for loop is done, did you win?
     if winner == False:
         print('\nSorry, you lose!')
         print(f'The final number was {target}.')
 
+    # Making sure the input is accurate because people suck
     yes_no = False
     while yes_no == False:
         print('\nPlay again? (Y/N)')
